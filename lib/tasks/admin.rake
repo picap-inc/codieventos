@@ -38,4 +38,5 @@ namespace :admin do
       puts "❌ Admin user not found with email: #{email}"
     end
   end
+
 end

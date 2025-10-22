@@ -18,14 +18,22 @@ Rails.application.routes.draw do
     post 'login', to: 'sessions#create'
     delete 'logout', to: 'sessions#destroy'
     
+    # QR Code attendance marking
+    get 'attendance/:event_id/:assistant_id', to: 'assistants#mark_attendance', as: 'mark_attendance'
+    
     resources :events do
       resources :assistants
       member do
         post :upload_assistants
         delete :remove_all_assistants
+        post :send_all_whatsapp_invitations
       end
     end
-    resources :assistants, only: [:index, :show]
+    resources :assistants, only: [:index, :show] do
+      member do
+        post :send_whatsapp_invitation
+      end
+    end
   end
 
   # Defines the root path route ("/")

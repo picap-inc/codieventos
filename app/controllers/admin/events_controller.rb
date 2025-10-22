@@ -108,6 +108,67 @@ module Admin
       redirect_to admin_event_path(@event), notice: "Successfully removed #{assistants_count} assistants from the event."
     end
 
+    def send_all_whatsapp_invitations
+      assistants_with_phone = @event.assistants.where(:phone.ne => nil, :phone.ne => '')
+      
+      if assistants_with_phone.empty?
+        redirect_to admin_event_assistants_path(@event), alert: "❌ No assistants with phone numbers found"
+        return
+      end
+
+      success_count = 0
+      error_count = 0
+      
+      assistants_with_phone.each do |assistant|
+        begin
+          # Generate QR code image
+          qr_image_file = assistant.generate_qr_code_image
+          
+          # Prepare WhatsApp message using event description
+          message = "🎉 #{assistant.event.title}\n\n" \
+                    "Hello #{assistant.name}!\n\n" \
+                    "#{assistant.event.description || 'Event invitation'}\n\n" \
+                    "Date: #{assistant.event.date&.strftime('%Y-%m-%d %H:%M') || 'TBD'}\n" \
+                    "Address: #{assistant.event.address || 'TBD'}\n\n" \
+                    "Show the QR code below at the entrance to mark your attendance."
+          
+          # Send via WhatsApp IA
+          whatsapp_client = WhatsappIa::Client.new
+          formatted_phone = assistant.formatted_phone_for_whatsapp
+          
+          response = whatsapp_client.send_message(
+            chat_id: formatted_phone,
+            message: message,
+            file_path: qr_image_file.path
+          )
+          
+          if response.success?
+            success_count += 1
+          else
+            error_count += 1
+          end
+          
+          # Clean up temporary file
+          qr_image_file&.close
+          qr_image_file&.unlink
+          
+          # Add small delay to avoid rate limiting
+          sleep(1)
+          
+        rescue => e
+          error_count += 1
+        end
+      end
+      
+      if error_count > 0
+        redirect_to admin_event_assistants_path(@event), 
+          alert: "⚠️ Sent #{success_count} invitations, #{error_count} failed"
+      else
+        redirect_to admin_event_assistants_path(@event), 
+          notice: "✅ Successfully sent #{success_count} WhatsApp invitations!"
+      end
+    end
+
     private
 
     def set_event

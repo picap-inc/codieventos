@@ -77,4 +77,8 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # URL options for production
+  config.action_mailer.default_url_options = { host: 'eventos.codi.com.co', protocol: 'https' }
+  Rails.application.routes.default_url_options = { host: 'eventos.codi.com.co', protocol: 'https' }
 end

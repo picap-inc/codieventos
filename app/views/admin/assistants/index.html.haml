@@ -6,7 +6,13 @@
   .btn-toolbar.mb-2.mb-md-0
     - if @event
       = link_to 'Back to Event', admin_event_path(@event), class: 'btn btn-secondary me-2'
-      = link_to 'Add Assistant', new_admin_event_assistant_path(@event), class: 'btn btn-primary'
+      = link_to 'Add Assistant', new_admin_event_assistant_path(@event), class: 'btn btn-primary me-2'
+      - assistants_with_phone = @assistants.select { |a| a.phone.present? }
+      - if assistants_with_phone.any?
+        = button_to 'Send All WhatsApp', send_all_whatsapp_invitations_admin_event_path(@event),
+          method: :post,
+          data: { confirm: "Send WhatsApp invitations to #{assistants_with_phone.count} assistants?" },
+          class: 'btn btn-success'
 
 .row.mb-3
   .col-md-6
@@ -70,6 +76,16 @@
                 %span.text-muted None
             %td
               = link_to 'Edit', edit_admin_event_assistant_path(assistant.event, assistant), class: 'btn btn-sm btn-outline-secondary me-1'
+              %button.btn.btn-sm.btn-outline-info.me-1{type: 'button', 'data-bs-toggle': 'modal', 'data-bs-target': "#qrModal#{assistant.id}"}
+                QR Code
+              - if assistant.phone.present?
+                = button_to 'Send WhatsApp', send_whatsapp_invitation_admin_assistant_path(assistant), 
+                  method: :post, 
+                  data: { confirm: "Send WhatsApp invitation to #{assistant.formatted_phone_for_whatsapp}?" },
+                  class: 'btn btn-sm btn-success me-1'
+              - else
+                %button.btn.btn-sm.btn-secondary.me-1{disabled: true, title: 'No phone number'}
+                  No Phone
               = link_to 'Delete', admin_event_assistant_path(assistant.event, assistant), method: :delete, 
                 confirm: 'Are you sure?', class: 'btn btn-sm btn-outline-danger'
 - else
@@ -78,3 +94,44 @@
       No assistants found matching "#{params[:search]}"
     - else
       No assistants found.
+
+- @assistants.each do |assistant|
+  .modal.fade{id: "qrModal#{assistant.id}", tabindex: "-1"}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %h5.modal-title QR Code for #{assistant.name}
+          %button.btn-close{type: "button", "data-bs-dismiss": "modal"}
+        .modal-body
+          .text-center
+            %p.mb-3
+              %strong Event:
+              = assistant.event.title
+            - if assistant.phone.present?
+              %p.mb-3
+                %strong WhatsApp:
+                #{assistant.phone} → #{assistant.formatted_phone_for_whatsapp}
+            %p.mb-3
+              %strong Status:
+              - case assistant.attendance_status
+              - when :registered
+                %span.badge.bg-secondary= assistant.attendance_status.to_s.humanize
+              - when :confirmed
+                %span.badge.bg-primary= assistant.attendance_status.to_s.humanize
+              - when :attended
+                %span.badge.bg-success= assistant.attendance_status.to_s.humanize
+              - when :absent
+                %span.badge.bg-warning= assistant.attendance_status.to_s.humanize
+              - when :cancelled
+                %span.badge.bg-danger= assistant.attendance_status.to_s.humanize
+            %div.border.p-3.bg-light
+              %small.text-muted QR Code URL:
+              %br
+              %code= assistant.generate_qr_url(request.host_with_port)
+              %br
+              %br
+              %small.text-muted Direct Link:
+              %br
+              = link_to assistant.generate_qr_url(request.host_with_port), assistant.generate_qr_url(request.host_with_port), target: '_blank', class: 'btn btn-sm btn-success'
+            %p.mt-3.text-muted
+              %small Scan this QR code at the event entrance to mark as attended

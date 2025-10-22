@@ -32,6 +32,9 @@ gem "httparty"
 # Excel file processing
 gem "roo"
 
+# QR code generation
+gem "rqrcode"
+
 # Bootstrap CSS framework
 gem 'bootstrap', '~> 5.3'
 gem 'sassc-rails'

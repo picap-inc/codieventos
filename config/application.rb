@@ -21,6 +21,9 @@ Bundler.require(*Rails.groups)
 # Explicitly require bcrypt
 require 'bcrypt'
 
+# Explicitly require rqrcode for QR code generation
+require 'rqrcode'
+
 module Codieventos
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
