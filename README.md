@@ -1,24 +1,17 @@
-# README
+# CodEventos
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Event management system with MongoDB and admin authentication.
 
-Things you may want to cover:
+## Features
+- Event management
+- Assistant registration with attendance tracking
+- XLSX bulk upload
+- Admin authentication system
+- MongoDB with Mongoid ODM
 
-* Ruby version
+## Admin Access
+- URL: `/admin/login`
+- Default: admin@codieventos.com / password123
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Deployment
+Auto-deploys to DigitalOcean on push to main branch.
