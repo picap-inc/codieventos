@@ -42,7 +42,7 @@ class Assistant
     qr = RQRCode::QRCode.new(qr_url)
     
     # Generate PNG image
-    png = qr.as_png(
+    qr_png = qr.as_png(
       bit_depth: 1,
       border_modules: 4,
       color_mode: ChunkyPNG::COLOR_GRAYSCALE,
@@ -55,10 +55,46 @@ class Assistant
       size: 300
     )
     
+    # Load company logo
+    logo_path = Rails.root.join('app', 'assets', 'images', 'codi_logo_color.png')
+    if File.exist?(logo_path)
+      # Create corporate QR code with logo overlay
+      qr_image = ChunkyPNG::Image.from_blob(qr_png.to_s)
+      logo_image = ChunkyPNG::Image.from_file(logo_path)
+      
+      # Calculate logo size maintaining aspect ratio (max 20% of QR code size)
+      max_logo_size = (qr_image.width * 0.2).to_i
+      original_width = logo_image.width
+      original_height = logo_image.height
+      
+      # Calculate scale factor to fit within max size while maintaining aspect ratio
+      scale_factor = [max_logo_size.to_f / original_width, max_logo_size.to_f / original_height].min
+      new_width = (original_width * scale_factor).to_i
+      new_height = (original_height * scale_factor).to_i
+      
+      # Calculate center position for logo
+      logo_x = (qr_image.width - new_width) / 2
+      logo_y = (qr_image.height - new_height) / 2
+      
+      # Resize logo maintaining aspect ratio
+      resized_logo = logo_image.resize(new_width, new_height)
+      
+      # Create white background for logo
+      white_bg = ChunkyPNG::Image.new(new_width + 10, new_height + 10, ChunkyPNG::Color::WHITE)
+      white_bg.compose!(resized_logo, 5, 5)
+      
+      # Overlay logo with white background on QR code
+      qr_image.compose!(white_bg, logo_x - 5, logo_y - 5)
+      
+      final_png = qr_image.to_blob
+    else
+      final_png = qr_png.to_s
+    end
+    
     # Save to temporary file
     temp_file = Tempfile.new(['qr_code', '.png'])
     temp_file.binmode
-    temp_file.write(png.to_s)
+    temp_file.write(final_png)
     temp_file.rewind
     temp_file
   end
