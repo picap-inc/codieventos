@@ -52,7 +52,7 @@ module Admin
     end
 
     def assistant_params
-      params.require(:assistant).permit(:name, :email, :phone)
+      params.require(:assistant).permit(:name, :email, :phone, :open1, :open2, :open3)
     end
   end
 end

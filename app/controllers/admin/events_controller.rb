@@ -65,6 +65,9 @@ module Admin
           name = spreadsheet.cell(row, 1)&.to_s&.strip
           email = spreadsheet.cell(row, 2)&.to_s&.strip
           phone = spreadsheet.cell(row, 3)&.to_s&.strip
+          open1 = spreadsheet.cell(row, 4)&.to_s&.strip
+          open2 = spreadsheet.cell(row, 5)&.to_s&.strip
+          open3 = spreadsheet.cell(row, 6)&.to_s&.strip
           
           # Skip empty rows
           next if name.blank? && email.blank? && phone.blank?
@@ -72,7 +75,10 @@ module Admin
           assistant = @event.assistants.build(
             name: name,
             email: email,
-            phone: phone
+            phone: phone,
+            open1: open1.present? ? open1 : nil,
+            open2: open2.present? ? open2 : nil,
+            open3: open3.present? ? open3 : nil
           )
           
           if assistant.save

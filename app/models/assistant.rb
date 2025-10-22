@@ -4,6 +4,9 @@ class Assistant
   field :name, type: String
   field :email, type: String
   field :phone, type: String
+  field :open1, type: String
+  field :open2, type: String
+  field :open3, type: String
 
   belongs_to :event
   

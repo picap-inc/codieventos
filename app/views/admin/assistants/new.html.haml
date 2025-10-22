@@ -18,6 +18,18 @@
         = form.label :phone, class: 'form-label'
         = form.telephone_field :phone, class: 'form-control'
       
+      .col-md-4
+        = form.label :open1, 'Extra Field 1', class: 'form-label'
+        = form.text_field :open1, class: 'form-control'
+      
+      .col-md-4
+        = form.label :open2, 'Extra Field 2', class: 'form-label'
+        = form.text_field :open2, class: 'form-control'
+      
+      .col-md-4
+        = form.label :open3, 'Extra Field 3', class: 'form-label'
+        = form.text_field :open3, class: 'form-control'
+      
       .col-12
         = form.submit 'Create Assistant', class: 'btn btn-primary'
         = link_to 'Cancel', admin_event_path(@event), class: 'btn btn-secondary'

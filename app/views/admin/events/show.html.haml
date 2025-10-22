@@ -42,6 +42,14 @@
                   %strong= assistant.name
                   %small.text-muted= assistant.email
                   %small.text-muted= assistant.phone
+                  - if assistant.open1.present? || assistant.open2.present? || assistant.open3.present?
+                    .mt-1
+                      - if assistant.open1.present?
+                        %span.badge.bg-light.text-dark.me-1= assistant.open1
+                      - if assistant.open2.present?
+                        %span.badge.bg-light.text-dark.me-1= assistant.open2
+                      - if assistant.open3.present?
+                        %span.badge.bg-light.text-dark.me-1= assistant.open3
                 .btn-group
                   = link_to 'Edit', edit_admin_event_assistant_path(@event, assistant), class: 'btn btn-sm btn-outline-secondary'
                   = link_to 'Delete', admin_event_assistant_path(@event, assistant), method: :delete, 
@@ -65,6 +73,8 @@
             %strong Expected format:
             %br
             Column A: Name, Column B: Email, Column C: Phone
+            %br
+            Column D: Extra Field 1, Column E: Extra Field 2, Column F: Extra Field 3 (optional)
             %br
             First row should contain headers (will be skipped)
         .modal-footer
