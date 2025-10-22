@@ -1,0 +1,11 @@
+= form_with url: admin_login_path, method: :post, local: true do |form|
+  .mb-3
+    = form.label :email, 'Email', class: 'form-label'
+    = form.email_field :email, class: 'form-control', placeholder: 'Enter your email', required: true, autofocus: true
+
+  .mb-3
+    = form.label :password, 'Password', class: 'form-label'
+    = form.password_field :password, class: 'form-control', placeholder: 'Enter your password', required: true
+
+  .d-grid
+    = form.submit 'Login', class: 'btn btn-primary'

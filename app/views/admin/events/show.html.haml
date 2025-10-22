@@ -1,7 +1,8 @@
 .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
   %h1.h2= @event.title
   .btn-toolbar.mb-2.mb-md-0
-    = link_to 'Edit', edit_admin_event_path(@event), class: 'btn btn-primary'
+    = link_to 'Edit', edit_admin_event_path(@event), class: 'btn btn-primary me-2'
+    = link_to 'Assistants', admin_event_assistants_path(@event), class: 'btn btn-info me-2'
     = link_to 'Back', admin_events_path, class: 'btn btn-secondary'
 
 .row
@@ -52,8 +53,21 @@
                   %strong= assistant.name
                   %small.text-muted= assistant.email
                   %small.text-muted= assistant.phone
-                  - if assistant.open1.present? || assistant.open2.present? || assistant.open3.present?
-                    .mt-1
+                  .mt-1
+                    - case assistant.attendance_status
+                    - when :registered
+                      %span.badge.bg-secondary.me-2= assistant.attendance_status.to_s.humanize
+                    - when :confirmed
+                      %span.badge.bg-primary.me-2= assistant.attendance_status.to_s.humanize
+                    - when :attended
+                      %span.badge.bg-success.me-2= assistant.attendance_status.to_s.humanize
+                    - when :absent
+                      %span.badge.bg-warning.me-2= assistant.attendance_status.to_s.humanize
+                    - when :cancelled
+                      %span.badge.bg-danger.me-2= assistant.attendance_status.to_s.humanize
+                    - else
+                      %span.badge.bg-light.text-dark.me-2= assistant.attendance_status.to_s.humanize
+                    - if assistant.open1.present? || assistant.open2.present? || assistant.open3.present?
                       - if assistant.open1.present?
                         %span.badge.bg-light.text-dark.me-1= assistant.open1
                       - if assistant.open2.present?

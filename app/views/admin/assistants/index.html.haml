@@ -31,6 +31,7 @@
           %th{scope: "col"} Name
           %th{scope: "col"} Email
           %th{scope: "col"} Phone
+          %th{scope: "col"} Status
           - unless @event
             %th{scope: "col"} Event
           %th{scope: "col"} Extra Fields
@@ -41,6 +42,20 @@
             %td= assistant.name
             %td= assistant.email
             %td= assistant.phone
+            %td
+              - case assistant.attendance_status
+              - when :registered
+                %span.badge.bg-secondary= assistant.attendance_status.to_s.humanize
+              - when :confirmed
+                %span.badge.bg-primary= assistant.attendance_status.to_s.humanize
+              - when :attended
+                %span.badge.bg-success= assistant.attendance_status.to_s.humanize
+              - when :absent
+                %span.badge.bg-warning= assistant.attendance_status.to_s.humanize
+              - when :cancelled
+                %span.badge.bg-danger= assistant.attendance_status.to_s.humanize
+              - else
+                %span.badge.bg-light.text-dark= assistant.attendance_status.to_s.humanize
             - unless @event
               %td= link_to assistant.event.title, admin_event_path(assistant.event), class: 'text-decoration-none'
             %td

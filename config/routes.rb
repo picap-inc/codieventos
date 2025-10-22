@@ -12,6 +12,12 @@ Rails.application.routes.draw do
   # Admin namespace
   namespace :admin do
     root 'admin_application#index'
+    
+    # Authentication routes
+    get 'login', to: 'sessions#new'
+    post 'login', to: 'sessions#create'
+    delete 'logout', to: 'sessions#destroy'
+    
     resources :events do
       resources :assistants
       member do

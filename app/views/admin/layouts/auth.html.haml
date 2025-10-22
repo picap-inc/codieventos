@@ -1,0 +1,32 @@
+%html{lang: 'en'}
+  %head
+    %title CodEventos Admin - Login
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "admin/application"
+    = javascript_include_tag "admin/application"
+
+  %body.bg-light
+    .container
+      .row.justify-content-center
+        .col-md-6.col-lg-4
+          .card.shadow.mt-5
+            .card-header.bg-primary.text-white
+              %h4.mb-0.text-center CodEventos Admin
+            .card-body
+              - flash.each do |type, message|
+                - css_class = case type.to_s
+                  - when 'success'
+                    - 'alert-success'
+                  - when 'error', 'alert'
+                    - 'alert-danger'
+                  - when 'warning'
+                    - 'alert-warning'
+                  - when 'notice'
+                    - 'alert-info'
+                  - else
+                    - 'alert-info'
+                .alert{class: css_class, role: 'alert'}
+                  = message.html_safe
+              = yield

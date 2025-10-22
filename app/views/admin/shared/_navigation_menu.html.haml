@@ -19,3 +19,12 @@
           %a.nav-link.d-flex.align-items-center.gap-2{href: admin_assistants_path}
             %i.bi.bi-people-fill
             Assistants
+      
+      %hr.my-3
+      .px-3
+        .d-flex.align-items-center.gap-2.mb-2
+          %i.bi.bi-person-circle
+          %small.text-muted= current_admin_user&.name
+        = button_to admin_logout_path, method: :delete, class: 'btn btn-outline-danger btn-sm w-100' do
+          %i.bi.bi-box-arrow-right.me-2
+          Logout

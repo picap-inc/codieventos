@@ -10,6 +10,9 @@ class Assistant
 
   belongs_to :event
   
+  # Attendance status enum
+  enum :attendance_status, [:registered, :confirmed, :attended, :absent, :cancelled], { default: :registered, required: false }
+  
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email" }, allow_blank: true
   validates :phone, uniqueness: { scope: :event, message: "already exists for this event" }, allow_blank: true
 
@@ -19,4 +22,6 @@ class Assistant
   index({ phone: 1, event_id: 1 })
   index({ name: 1 })
   index({ created_at: 1 })
+  index({ _attendance_status: 1 })
+  index({ _attendance_status: 1, event_id: 1 })
 end

@@ -30,6 +30,12 @@
         = form.label :open3, 'Extra Field 3', class: 'form-label'
         = form.text_field :open3, class: 'form-control'
       
+      .col-md-6
+        = form.label :attendance_status, 'Attendance Status', class: 'form-label'
+        = form.select :attendance_status, 
+          options_for_select([['Registered', 'registered'], ['Confirmed', 'confirmed'], ['Attended', 'attended'], ['Absent', 'absent'], ['Cancelled', 'cancelled']], 'registered'),
+          {}, { class: 'form-control' }
+      
       .col-12
         = form.submit 'Create Assistant', class: 'btn btn-primary'
         = link_to 'Cancel', admin_event_path(@event), class: 'btn btn-secondary'
