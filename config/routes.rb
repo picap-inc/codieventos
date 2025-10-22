@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     root 'admin_application#index'
     resources :events do
       resources :assistants
+      member do
+        post :upload_assistants
+      end
     end
     resources :assistants, only: [:index, :show]
   end

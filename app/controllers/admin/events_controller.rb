@@ -1,6 +1,6 @@
 module Admin
   class EventsController < AdminApplicationController
-    before_action :set_event, only: [:show, :edit, :update, :destroy]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :upload_assistants]
 
     def index
       @events = Event.all
@@ -37,6 +37,62 @@ module Admin
     def destroy
       @event.destroy
       redirect_to admin_events_path, notice: 'Event was successfully deleted.'
+    end
+
+    def upload_assistants
+      unless params[:file].present?
+        redirect_to admin_event_path(@event), alert: 'Please select a file to upload.'
+        return
+      end
+
+      file = params[:file]
+      
+      unless file.content_type.in?(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])
+        redirect_to admin_event_path(@event), alert: 'Please upload a valid Excel file (.xlsx or .xls).'
+        return
+      end
+
+      begin
+        require 'roo'
+        
+        spreadsheet = Roo::Spreadsheet.open(file.tempfile, extension: File.extname(file.original_filename))
+        
+        added_count = 0
+        errors = []
+        
+        # Skip header row (row 1) and process data starting from row 2
+        (2..spreadsheet.last_row).each do |row|
+          name = spreadsheet.cell(row, 1)&.to_s&.strip
+          email = spreadsheet.cell(row, 2)&.to_s&.strip
+          phone = spreadsheet.cell(row, 3)&.to_s&.strip
+          
+          # Skip empty rows
+          next if name.blank? && email.blank? && phone.blank?
+          
+          assistant = @event.assistants.build(
+            name: name,
+            email: email,
+            phone: phone
+          )
+          
+          if assistant.save
+            added_count += 1
+          else
+            errors << "Row #{row}: #{assistant.errors.full_messages.join(', ')}"
+          end
+        end
+        
+        if errors.any?
+          flash[:alert] = "#{added_count} assistants added successfully. Errors: #{errors.join('; ')}"
+        else
+          flash[:notice] = "Successfully added #{added_count} assistants to the event."
+        end
+        
+      rescue => e
+        flash[:alert] = "Error processing file: #{e.message}"
+      end
+      
+      redirect_to admin_event_path(@event)
     end
 
     private

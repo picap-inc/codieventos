@@ -29,6 +29,9 @@ gem "haml-rails"
 # HTTP client library for API integrations
 gem "httparty"
 
+# Excel file processing
+gem "roo"
+
 # Bootstrap CSS framework
 gem 'bootstrap', '~> 5.3'
 gem 'sassc-rails'

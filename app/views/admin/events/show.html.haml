@@ -23,8 +23,16 @@
   .col-lg-4
     .card
       .card-header.d-flex.justify-content-between.align-items-center
-        %h5.card-title Assistants
-        = link_to 'Add Assistant', new_admin_event_assistant_path(@event), class: 'btn btn-sm btn-primary'
+        %h5.card-title Assistants (#{@event.assistants.count})
+        .dropdown
+          %button.btn.btn-sm.btn-primary.dropdown-toggle{type: "button", "data-bs-toggle" => "dropdown"}
+            Add Assistants
+          %ul.dropdown-menu
+            %li
+              = link_to 'Add Single Assistant', new_admin_event_assistant_path(@event), class: 'dropdown-item'
+            %li
+              %a.dropdown-item{href: "#", "data-bs-toggle" => "modal", "data-bs-target" => "#uploadModal"}
+                Upload XLSX File
       .card-body
         - if @event.assistants.any?
           .list-group
@@ -40,3 +48,25 @@
                     confirm: 'Are you sure?', class: 'btn btn-sm btn-outline-danger'
         - else
           %p.text-muted No assistants yet.
+
+#uploadModal.modal.fade{tabindex: "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title Upload Assistants XLSX
+        %button.btn-close{type: "button", "data-bs-dismiss" => "modal"}
+      = form_with url: upload_assistants_admin_event_path(@event), method: :post, 
+        multipart: true, local: true, class: 'modal-body' do |form|
+        .mb-3
+          = form.label :file, 'Select XLSX file:', class: 'form-label'
+          = form.file_field :file, accept: '.xlsx,.xls', class: 'form-control', required: true
+        .mb-3
+          %small.text-muted
+            %strong Expected format:
+            %br
+            Column A: Name, Column B: Email, Column C: Phone
+            %br
+            First row should contain headers (will be skipped)
+        .modal-footer
+          %button.btn.btn-secondary{type: "button", "data-bs-dismiss" => "modal"} Cancel
+          = form.submit 'Upload Assistants', class: 'btn btn-primary'
