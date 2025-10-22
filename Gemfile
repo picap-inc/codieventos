@@ -26,6 +26,9 @@ gem "mongoid", "~> 9.0"
 # HAML templating engine
 gem "haml-rails"
 
+# HTTP client library for API integrations
+gem "httparty"
+
 # Bootstrap CSS framework
 gem 'bootstrap', '~> 5.3'
 gem 'sassc-rails'
