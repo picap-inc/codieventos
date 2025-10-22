@@ -1,6 +1,8 @@
+require 'roo'
+
 module Admin
   class EventsController < AdminApplicationController
-    before_action :set_event, only: [:show, :edit, :update, :destroy, :upload_assistants]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :upload_assistants, :remove_all_assistants]
 
     def index
       @events = Event.all
@@ -53,8 +55,6 @@ module Admin
       end
 
       begin
-        require 'roo'
-        
         spreadsheet = Roo::Spreadsheet.open(file.tempfile, extension: File.extname(file.original_filename))
         
         added_count = 0
@@ -99,6 +99,13 @@ module Admin
       end
       
       redirect_to admin_event_path(@event)
+    end
+
+    def remove_all_assistants
+      assistants_count = @event.assistants.count
+      @event.assistants.destroy_all
+      
+      redirect_to admin_event_path(@event), notice: "Successfully removed #{assistants_count} assistants from the event."
     end
 
     private

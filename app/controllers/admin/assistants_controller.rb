@@ -1,10 +1,30 @@
 module Admin
   class AssistantsController < AdminApplicationController
-    before_action :set_event, only: [:new, :create, :edit, :update, :destroy]
+    before_action :set_event, only: [:index, :new, :create, :edit, :update, :destroy]
     before_action :set_assistant, only: [:show, :edit, :update, :destroy]
 
     def index
-      @assistants = Assistant.all
+      if @event
+        # Event-specific assistants with search
+        @assistants = @event.assistants
+        
+        if params[:search].present?
+          search_term = params[:search].strip
+          @assistants = @assistants.any_of(
+            { name: /#{Regexp.escape(search_term)}/i },
+            { email: /#{Regexp.escape(search_term)}/i },
+            { phone: /#{Regexp.escape(search_term)}/i },
+            { open1: /#{Regexp.escape(search_term)}/i },
+            { open2: /#{Regexp.escape(search_term)}/i },
+            { open3: /#{Regexp.escape(search_term)}/i }
+          )
+        end
+        
+        @assistants = @assistants.order_by(created_at: :desc)
+      else
+        # All assistants
+        @assistants = Assistant.all.order_by(created_at: :desc)
+      end
     end
 
     def show

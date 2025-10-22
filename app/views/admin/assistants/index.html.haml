@@ -1,21 +1,65 @@
 .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
-  %h1.h2 Assistants
+  - if @event
+    %h1.h2 Assistants for #{@event.title}
+  - else
+    %h1.h2 All Assistants
+  .btn-toolbar.mb-2.mb-md-0
+    - if @event
+      = link_to 'Back to Event', admin_event_path(@event), class: 'btn btn-secondary me-2'
+      = link_to 'Add Assistant', new_admin_event_assistant_path(@event), class: 'btn btn-primary'
 
-.table-responsive
-  %table.table.table-striped.table-sm
-    %thead
-      %tr
-        %th{scope: "col"} Name
-        %th{scope: "col"} Email
-        %th{scope: "col"} Phone
-        %th{scope: "col"} Event
-        %th{scope: "col"} Actions
-    %tbody
-      - @assistants.each do |assistant|
+.row.mb-3
+  .col-md-6
+    = form_with url: (@event ? admin_event_assistants_path(@event) : admin_assistants_path), method: :get, local: true, class: 'd-flex' do |form|
+      = form.text_field :search, value: params[:search], placeholder: 'Search assistants...', 
+        class: 'form-control me-2'
+      = form.submit 'Search', class: 'btn btn-outline-secondary'
+      - if params[:search].present?
+        = link_to 'Clear', (@event ? admin_event_assistants_path(@event) : admin_assistants_path), 
+          class: 'btn btn-outline-danger ms-2'
+
+- if @assistants.any?
+  .alert.alert-info
+    Found #{@assistants.count} assistant#{'s' if @assistants.count != 1}
+    - if params[:search].present?
+      matching "#{params[:search]}"
+
+  .table-responsive
+    %table.table.table-striped.table-sm
+      %thead
         %tr
-          %td= assistant.name
-          %td= assistant.email
-          %td= assistant.phone
-          %td= link_to assistant.event.title, admin_event_path(assistant.event), class: 'text-decoration-none'
-          %td
-            = link_to 'Show', admin_assistant_path(assistant), class: 'btn btn-sm btn-outline-primary'
+          %th{scope: "col"} Name
+          %th{scope: "col"} Email
+          %th{scope: "col"} Phone
+          - unless @event
+            %th{scope: "col"} Event
+          %th{scope: "col"} Extra Fields
+          %th{scope: "col"} Actions
+      %tbody
+        - @assistants.each do |assistant|
+          %tr
+            %td= assistant.name
+            %td= assistant.email
+            %td= assistant.phone
+            - unless @event
+              %td= link_to assistant.event.title, admin_event_path(assistant.event), class: 'text-decoration-none'
+            %td
+              - if assistant.open1.present? || assistant.open2.present? || assistant.open3.present?
+                - if assistant.open1.present?
+                  %span.badge.bg-light.text-dark.me-1= assistant.open1
+                - if assistant.open2.present?
+                  %span.badge.bg-light.text-dark.me-1= assistant.open2
+                - if assistant.open3.present?
+                  %span.badge.bg-light.text-dark.me-1= assistant.open3
+              - else
+                %span.text-muted None
+            %td
+              = link_to 'Edit', edit_admin_event_assistant_path(assistant.event, assistant), class: 'btn btn-sm btn-outline-secondary me-1'
+              = link_to 'Delete', admin_event_assistant_path(assistant.event, assistant), method: :delete, 
+                confirm: 'Are you sure?', class: 'btn btn-sm btn-outline-danger'
+- else
+  .alert.alert-warning
+    - if params[:search].present?
+      No assistants found matching "#{params[:search]}"
+    - else
+      No assistants found.

@@ -10,7 +10,13 @@ class Assistant
 
   belongs_to :event
   
-  validates :name, presence: true
-  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email" }
-  validates :phone, presence: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email" }, allow_blank: true
+  validates :phone, uniqueness: { scope: :event, message: "already exists for this event" }, allow_blank: true
+
+  # Indexes
+  index({ event_id: 1 })
+  index({ email: 1 })
+  index({ phone: 1, event_id: 1 })
+  index({ name: 1 })
+  index({ created_at: 1 })
 end

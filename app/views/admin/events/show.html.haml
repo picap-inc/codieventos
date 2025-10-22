@@ -23,16 +23,26 @@
   .col-lg-4
     .card
       .card-header.d-flex.justify-content-between.align-items-center
-        %h5.card-title Assistants (#{@event.assistants.count})
+        %h5.card-title 
+          Assistants (#{@event.assistants.count})
+          = link_to 'View All', admin_event_assistants_path(@event), class: 'btn btn-sm btn-outline-primary ms-2'
         .dropdown
           %button.btn.btn-sm.btn-primary.dropdown-toggle{type: "button", "data-bs-toggle" => "dropdown"}
-            Add Assistants
+            Manage Assistants
           %ul.dropdown-menu
             %li
               = link_to 'Add Single Assistant', new_admin_event_assistant_path(@event), class: 'dropdown-item'
             %li
               %a.dropdown-item{href: "#", "data-bs-toggle" => "modal", "data-bs-target" => "#uploadModal"}
                 Upload XLSX File
+            %li
+              %hr.dropdown-divider
+            %li
+              = button_to 'Remove All Assistants', remove_all_assistants_admin_event_path(@event), 
+                method: :delete, 
+                data: { confirm: 'Are you sure you want to remove ALL assistants from this event? This action cannot be undone.' },
+                class: 'dropdown-item text-danger btn btn-link p-0 border-0 text-start w-100',
+                style: 'background: none;'
       .card-body
         - if @event.assistants.any?
           .list-group
@@ -72,9 +82,17 @@
           %small.text-muted
             %strong Expected format:
             %br
-            Column A: Name, Column B: Email, Column C: Phone
+            Column A: Name (optional)
             %br
-            Column D: Extra Field 1, Column E: Extra Field 2, Column F: Extra Field 3 (optional)
+            Column B: Email (optional)
+            %br
+            Column C: Phone (optional)
+            %br
+            Column D: Extra Field 1 (optional)
+            %br
+            Column E: Extra Field 2 (optional)
+            %br
+            Column F: Extra Field 3 (optional)
             %br
             First row should contain headers (will be skipped)
         .modal-footer

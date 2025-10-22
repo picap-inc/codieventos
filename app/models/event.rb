@@ -7,4 +7,10 @@ class Event
   field :date, type: Time
 
   has_many :assistants, dependent: :destroy
+
+  # Indexes
+  index({ title: 1 })
+  index({ date: 1 })
+  index({ created_at: 1 })
+  index({ updated_at: 1 })
 end

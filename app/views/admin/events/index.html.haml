@@ -21,7 +21,8 @@
           %td
             %span.badge.bg-secondary= event.assistants.count
           %td
-            = link_to 'Show', admin_event_path(event), class: 'btn btn-sm btn-outline-primary'
-            = link_to 'Edit', edit_admin_event_path(event), class: 'btn btn-sm btn-outline-secondary'
+            = link_to 'Show', admin_event_path(event), class: 'btn btn-sm btn-outline-primary me-1'
+            = link_to 'Assistants', admin_event_assistants_path(event), class: 'btn btn-sm btn-outline-info me-1'
+            = link_to 'Edit', edit_admin_event_path(event), class: 'btn btn-sm btn-outline-secondary me-1'
             = link_to 'Delete', admin_event_path(event), method: :delete, 
               confirm: 'Are you sure?', class: 'btn btn-sm btn-outline-danger'
