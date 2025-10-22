@@ -1,0 +1,27 @@
+.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+  %h1.h2 New Event
+  .btn-toolbar.mb-2.mb-md-0
+    = link_to 'Back', admin_events_path, class: 'btn btn-secondary'
+
+.row
+  .col-lg-8
+    = form_with model: [:admin, @event], local: true, class: 'row g-3' do |form|
+      .col-12
+        = form.label :title, class: 'form-label'
+        = form.text_field :title, class: 'form-control'
+      
+      .col-12
+        = form.label :description, class: 'form-label'
+        = form.text_area :description, rows: 4, class: 'form-control'
+      
+      .col-md-6
+        = form.label :date, class: 'form-label'
+        = form.datetime_local_field :date, class: 'form-control'
+      
+      .col-md-6
+        = form.label :address, class: 'form-label'
+        = form.text_field :address, class: 'form-control'
+      
+      .col-12
+        = form.submit 'Create Event', class: 'btn btn-primary'
+        = link_to 'Cancel', admin_events_path, class: 'btn btn-secondary'

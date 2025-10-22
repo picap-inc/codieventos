@@ -1,0 +1,12 @@
+defaults: &defaults
+  clients:
+    default:
+      uri: <%= ENV['MONGODB_URI'] || Rails.application.credentials.mongoid&.url %>
+      options:
+        connect_timeout: 30
+        wait_queue_timeout: 30
+        max_pool_size: 30
+development:
+  <<: *defaults
+production:
+  <<: *defaults

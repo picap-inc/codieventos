@@ -1,0 +1,23 @@
+.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+  %h1.h2 New Assistant for #{@event.title}
+  .btn-toolbar.mb-2.mb-md-0
+    = link_to 'Back', admin_event_path(@event), class: 'btn btn-secondary'
+
+.row
+  .col-lg-8
+    = form_with model: [:admin, @event, @assistant], local: true, class: 'row g-3' do |form|
+      .col-12
+        = form.label :name, class: 'form-label'
+        = form.text_field :name, class: 'form-control'
+      
+      .col-md-6
+        = form.label :email, class: 'form-label'
+        = form.email_field :email, class: 'form-control'
+      
+      .col-md-6
+        = form.label :phone, class: 'form-label'
+        = form.telephone_field :phone, class: 'form-control'
+      
+      .col-12
+        = form.submit 'Create Assistant', class: 'btn btn-primary'
+        = link_to 'Cancel', admin_event_path(@event), class: 'btn btn-secondary'

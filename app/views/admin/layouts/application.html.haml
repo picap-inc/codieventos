@@ -1,0 +1,42 @@
+%html{lang: 'en'}
+  %head
+    %title CodEventos Admin
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "admin/application"
+    = javascript_include_tag "admin/application"
+
+  %body
+    %header.navbar.sticky-top.bg-dark.flex-md-nowrap.p-0.shadow{"data-bs-theme" => "dark"}
+      %a.navbar-brand.col-md-3.col-lg-2.me-0.px-3.fs-6.text-white{href: "#"} CodEventos
+      %ul.navbar-nav.flex-row.d-md-none
+        %li.nav-item.text-nowrap
+          %button.nav-link.px-3.text-white{"aria-controls" => "navbarSearch", "aria-expanded" => "false", "aria-label" => "Toggle search", "data-bs-target" => "#navbarSearch", "data-bs-toggle" => "collapse", type: "button"}
+            %i.bi.bi-search
+        %li.nav-item.text-nowrap
+          %button.nav-link.px-3.text-white{"aria-controls" => "sidebarMenu", "aria-label" => "Toggle navigation", "data-bs-target" => "#sidebarMenu", "data-bs-toggle" => "offcanvas", type: "button"}
+            %i.bi.bi-list
+      #navbarSearch.navbar-search.w-100.collapse
+        %input.form-control.w-100.rounded-0.border-0{"aria-label" => "Search", placeholder: "Search", type: "text"}/
+    .container-fluid
+      .row
+        = render 'admin/shared/navigation_menu'
+        %main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+          - flash.each do |type, message|
+            - css_class = case type.to_s
+              - when 'success'
+                - 'alert-success'
+              - when 'error', 'alert'
+                - 'alert-danger'
+              - when 'warning'
+                - 'alert-warning'
+              - when 'notice'
+                - 'alert-info'
+              - else
+                - 'alert-info'
+            .alert{class: css_class, role: 'alert', style: 'margin-top: 1rem;'}
+              .d-flex.justify-content-between.align-items-center
+                %div= message.html_safe
+                %button.btn-close{type: 'button', 'data-bs-dismiss': 'alert', 'aria-label': 'Close'}
+          = yield

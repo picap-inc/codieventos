@@ -1,0 +1,23 @@
+.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+  %h1.h2 Dashboard
+  .btn-toolbar.mb-2.mb-md-0
+    .btn-group.me-2
+      %button.btn.btn-sm.btn-outline-secondary{type: "button"} Share
+      %button.btn.btn-sm.btn-outline-secondary{type: "button"} Export
+
+.row
+  .col-lg-6
+    .card
+      .card-header
+        %h5.card-title Events Summary
+      .card-body
+        %p.card-text Total Events: #{Event.count}
+        = link_to 'Manage Events', admin_events_path, class: 'btn btn-primary'
+  
+  .col-lg-6
+    .card
+      .card-header
+        %h5.card-title Assistants Summary
+      .card-body
+        %p.card-text Total Assistants: #{Assistant.count}
+        = link_to 'Manage Assistants', admin_assistants_path, class: 'btn btn-primary'

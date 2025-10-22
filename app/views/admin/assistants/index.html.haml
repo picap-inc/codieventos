@@ -1,0 +1,21 @@
+.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+  %h1.h2 Assistants
+
+.table-responsive
+  %table.table.table-striped.table-sm
+    %thead
+      %tr
+        %th{scope: "col"} Name
+        %th{scope: "col"} Email
+        %th{scope: "col"} Phone
+        %th{scope: "col"} Event
+        %th{scope: "col"} Actions
+    %tbody
+      - @assistants.each do |assistant|
+        %tr
+          %td= assistant.name
+          %td= assistant.email
+          %td= assistant.phone
+          %td= link_to assistant.event.title, admin_event_path(assistant.event), class: 'text-decoration-none'
+          %td
+            = link_to 'Show', admin_assistant_path(assistant), class: 'btn btn-sm btn-outline-primary'
