@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'httparty'
-
 module WhatsappIa
   class Client
     include HTTParty
