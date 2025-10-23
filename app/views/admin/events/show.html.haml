@@ -67,6 +67,17 @@
                       %span.badge.bg-danger.me-2= assistant.attendance_status.to_s.humanize
                     - else
                       %span.badge.bg-light.text-dark.me-2= assistant.attendance_status.to_s.humanize
+                    - case assistant.whatsapp_invitation_status
+                    - when :not_sent
+                      %span.badge.bg-light.text-dark.me-2 📱 Not Sent
+                    - when :sent
+                      %span.badge.bg-info.me-2 📱 Sent
+                    - when :failed
+                      %span.badge.bg-danger.me-2 📱 Failed
+                    - when :delivered
+                      %span.badge.bg-success.me-2 📱 Delivered
+                    - else
+                      %span.badge.bg-light.text-dark.me-2 📱 Unknown
                     - if assistant.open1.present? || assistant.open2.present? || assistant.open3.present?
                       - if assistant.open1.present?
                         %span.badge.bg-light.text-dark.me-1= assistant.open1

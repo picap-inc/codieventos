@@ -36,12 +36,15 @@ class WhatsappInvitationService
       )
       
       if response.success?
+        @assistant.update!(whatsapp_invitation_status: :sent)
         { success: true, message: "WhatsApp invitation sent to #{@assistant.name}" }
       else
+        @assistant.update!(whatsapp_invitation_status: :failed)
         { success: false, error: "Failed to send WhatsApp: #{response.body}" }
       end
       
     rescue => e
+      @assistant.update!(whatsapp_invitation_status: :failed) if @assistant
       { success: false, error: "Error sending WhatsApp: #{e.message}" }
     ensure
       # Clean up temporary file
@@ -51,15 +54,20 @@ class WhatsappInvitationService
   end
 
   def send_bulk_invitations(assistants)
-    assistants_with_phone = assistants.select { |a| a.phone.present? }
+    # Filter assistants: must have phone and not already sent invitation
+    eligible_assistants = assistants.select { |a| a.phone.present? && a.whatsapp_invitation_status == :not_sent }
     
-    return { success: false, error: "No assistants with phone numbers found" } if assistants_with_phone.empty?
+    return { success: false, error: "No eligible assistants found (need phone number and 'not_sent' status)" } if eligible_assistants.empty?
 
+    # Limit to 10 assistants per bulk operation
+    assistants_to_send = eligible_assistants.first(10)
+    
     success_count = 0
     error_count = 0
     errors = []
+    skipped_count = eligible_assistants.count - assistants_to_send.count
     
-    assistants_with_phone.each do |assistant|
+    assistants_to_send.each do |assistant|
       result = self.class.send_invitation(assistant)
       
       if result[:success]
@@ -73,12 +81,20 @@ class WhatsappInvitationService
       sleep(1)
     end
     
-    {
+    result = {
       success: error_count == 0,
       success_count: success_count,
       error_count: error_count,
       errors: errors
     }
+    
+    # Add info about skipped assistants if any
+    if skipped_count > 0
+      result[:skipped_count] = skipped_count
+      result[:skipped_message] = "#{skipped_count} additional eligible assistants will be sent in next batch"
+    end
+    
+    result
   end
 
   private

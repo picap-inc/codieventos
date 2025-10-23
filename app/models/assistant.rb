@@ -13,6 +13,9 @@ class Assistant
   # Attendance status enum
   enum :attendance_status, [:registered, :confirmed, :attended, :absent, :cancelled], { default: :registered, required: false }
   
+  # WhatsApp invitation status enum
+  enum :whatsapp_invitation_status, [:not_sent, :sent, :failed, :delivered], { default: :not_sent, required: false }
+  
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email" }, allow_blank: true
   validates :phone, uniqueness: { scope: :event, message: "already exists for this event" }, allow_blank: true
 
@@ -24,6 +27,8 @@ class Assistant
   index({ created_at: 1 })
   index({ _attendance_status: 1 })
   index({ _attendance_status: 1, event_id: 1 })
+  index({ _whatsapp_invitation_status: 1 })
+  index({ _whatsapp_invitation_status: 1, event_id: 1 })
 
   def generate_qr_url(host = nil)
     if host

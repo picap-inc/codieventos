@@ -17,7 +17,8 @@ module Admin
             { open1: /#{Regexp.escape(search_term)}/i },
             { open2: /#{Regexp.escape(search_term)}/i },
             { open3: /#{Regexp.escape(search_term)}/i },
-            { _attendance_status: /#{Regexp.escape(search_term)}/i }
+            { _attendance_status: /#{Regexp.escape(search_term)}/i },
+            { _whatsapp_invitation_status: /#{Regexp.escape(search_term)}/i }
           )
         end
         
@@ -104,7 +105,7 @@ module Admin
     end
 
     def assistant_params
-      params.require(:assistant).permit(:name, :email, :phone, :open1, :open2, :open3, :attendance_status)
+      params.require(:assistant).permit(:name, :email, :phone, :open1, :open2, :open3, :attendance_status, :whatsapp_invitation_status)
     end
   end
 end

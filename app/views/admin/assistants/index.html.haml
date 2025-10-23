@@ -37,7 +37,8 @@
           %th{scope: "col"} Name
           %th{scope: "col"} Email
           %th{scope: "col"} Phone
-          %th{scope: "col"} Status
+          %th{scope: "col"} Attendance
+          %th{scope: "col"} WhatsApp
           - unless @event
             %th{scope: "col"} Event
           %th{scope: "col"} Extra Fields
@@ -62,6 +63,18 @@
                 %span.badge.bg-danger= assistant.attendance_status.to_s.humanize
               - else
                 %span.badge.bg-light.text-dark= assistant.attendance_status.to_s.humanize
+            %td
+              - case assistant.whatsapp_invitation_status
+              - when :not_sent
+                %span.badge.bg-light.text-dark 📱 Not Sent
+              - when :sent
+                %span.badge.bg-info 📱 Sent
+              - when :failed
+                %span.badge.bg-danger 📱 Failed
+              - when :delivered
+                %span.badge.bg-success 📱 Delivered
+              - else
+                %span.badge.bg-light.text-dark 📱 Unknown
             - unless @event
               %td= link_to assistant.event.title, admin_event_path(assistant.event), class: 'text-decoration-none'
             %td

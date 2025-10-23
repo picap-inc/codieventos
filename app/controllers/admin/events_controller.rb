@@ -112,14 +112,16 @@ module Admin
       result = WhatsappInvitationService.send_event_invitations(@event)
       
       if result[:success]
-        redirect_to admin_event_assistants_path(@event), 
-          notice: "✅ Successfully sent #{result[:success_count]} WhatsApp invitations!"
+        message = "✅ Successfully sent #{result[:success_count]} WhatsApp invitations!"
+        message += " #{result[:skipped_message]}" if result[:skipped_count] && result[:skipped_count] > 0
+        redirect_to admin_event_assistants_path(@event), notice: message
       elsif result[:error]
         redirect_to admin_event_assistants_path(@event), alert: "❌ #{result[:error]}"
       else
         error_details = result[:errors].any? ? "\n\nErrors:\n#{result[:errors].join("\n")}" : ""
+        skipped_info = result[:skipped_count] && result[:skipped_count] > 0 ? " (#{result[:skipped_message]})" : ""
         redirect_to admin_event_assistants_path(@event), 
-          alert: "⚠️ Sent #{result[:success_count]} invitations, #{result[:error_count]} failed#{error_details}"
+          alert: "⚠️ Sent #{result[:success_count]} invitations, #{result[:error_count]} failed#{error_details}#{skipped_info}"
       end
     end
 
