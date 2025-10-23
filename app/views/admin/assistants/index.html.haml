@@ -24,6 +24,53 @@
         = link_to 'Clear', (@event ? admin_event_assistants_path(@event) : admin_assistants_path), 
           class: 'btn btn-outline-danger ms-2'
 
+- if @event
+  .row.mb-4
+    .col-md-12
+      .card
+        .card-header
+          %h5.card-title 📊 WhatsApp Invitation Statistics
+        .card-body
+          .row
+            - whatsapp_stats = @assistants.group_by(&:whatsapp_invitation_status)
+            - total_assistants = @assistants.count
+            - assistants_with_phone = @assistants.select { |a| a.phone.present? }.count
+            - not_sent_count = whatsapp_stats[:not_sent]&.count || 0
+            - sent_count = whatsapp_stats[:sent]&.count || 0
+            - failed_count = whatsapp_stats[:failed]&.count || 0
+            - delivered_count = whatsapp_stats[:delivered]&.count || 0
+            
+            .col-md-3
+              .text-center
+                %h4.text-primary= assistants_with_phone
+                %small.text-muted Total with Phone
+            .col-md-3
+              .text-center
+                %h4.text-secondary= not_sent_count
+                %small.text-muted 📱 Not Sent
+            .col-md-3
+              .text-center
+                %h4.text-info= sent_count
+                %small.text-muted 📱 Sent
+            .col-md-3
+              .text-center
+                %h4.text-danger= failed_count
+                %small.text-muted 📱 Failed
+          .row.mt-3
+            .col-md-6
+              .progress
+                - if assistants_with_phone > 0
+                  - sent_percentage = ((sent_count + delivered_count).to_f / assistants_with_phone * 100).round(1)
+                  .progress-bar.bg-success{style: "width: #{sent_percentage}%"}
+                    #{sent_percentage}% Sent
+            .col-md-6
+              %small.text-muted
+                Success Rate: 
+                - if assistants_with_phone > 0
+                  #{((sent_count + delivered_count).to_f / assistants_with_phone * 100).round(1)}%
+                - else
+                  0%
+
 - if @assistants.any?
   .alert.alert-info
     Found #{@assistants.count} assistant#{'s' if @assistants.count != 1}
