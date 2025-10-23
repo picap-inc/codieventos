@@ -7,6 +7,7 @@ class Assistant
   field :open1, type: String
   field :open2, type: String
   field :open3, type: String
+  field :attended_at, type: DateTime
 
   belongs_to :event
   
@@ -105,7 +106,7 @@ class Assistant
   end
 
   def mark_as_attended!
-    update!(attendance_status: :attended)
+    update!(attendance_status: :attended, attended_at: Time.zone.now)
   end
 
   def formatted_phone_for_whatsapp

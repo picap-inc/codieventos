@@ -69,8 +69,9 @@ module Admin
       
       if assistant
         if assistant.attendance_status == :attended
+          bogota_time = assistant.attended_at.in_time_zone('America/Bogota')
           redirect_to admin_event_path(event), 
-            alert: "❌ #{assistant.name} was already checked in at #{assistant.updated_at.strftime('%Y-%m-%d %H:%M')}"
+            alert: "❌ #{assistant.name} was already checked in at #{bogota_time.strftime('%Y-%m-%d %H:%M')}"
         else
           assistant.mark_as_attended!
           redirect_to admin_event_path(event), 
@@ -110,7 +111,7 @@ module Admin
     end
 
     def assistant_params
-      params.require(:assistant).permit(:name, :email, :phone, :open1, :open2, :open3, :attendance_status, :whatsapp_invitation_status)
+      params.require(:assistant).permit(:name, :email, :phone, :open1, :open2, :open3, :attendance_status, :whatsapp_invitation_status, :attended_at)
     end
   end
 end
