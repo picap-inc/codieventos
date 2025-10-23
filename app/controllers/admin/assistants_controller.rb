@@ -68,9 +68,14 @@ module Admin
       assistant = event.assistants.find(params[:assistant_id])
       
       if assistant
-        assistant.mark_as_attended!
-        redirect_to admin_event_path(event), 
-          notice: "✅ #{assistant.name} marked as attended!"
+        if assistant.attendance_status == :attended
+          redirect_to admin_event_path(event), 
+            alert: "❌ #{assistant.name} was already checked in at #{assistant.updated_at.strftime('%Y-%m-%d %H:%M')}"
+        else
+          assistant.mark_as_attended!
+          redirect_to admin_event_path(event), 
+            notice: "✅ #{assistant.name} marked as attended!"
+        end
       else
         redirect_to admin_root_path, 
           alert: "❌ Assistant not found."
