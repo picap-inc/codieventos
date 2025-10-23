@@ -2,7 +2,7 @@ require 'roo'
 
 module Admin
   class EventsController < AdminApplicationController
-    before_action :set_event, only: [:show, :edit, :update, :destroy, :upload_assistants, :remove_all_assistants]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :upload_assistants, :remove_all_assistants, :send_all_whatsapp_invitations]
 
     def index
       @events = Event.all
